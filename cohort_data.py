@@ -61,8 +61,20 @@ def students_by_cohort(filename, cohort='All'):
     """
 
     students = []
-
-    # TODO: replace this with your code
+    
+    data = open(filename)
+    # data = open('cohort_data.txt')
+    
+    for line in data:
+      first, last, _, _, cohort_name = line.rstrip().split('|')
+      # print(f"{first} {last} is in {cohort_name}") # check to make sure above line is working as intended
+      if cohort == 'All' and cohort_name != 'I' and cohort_name != 'G':
+        students.append(f"{first} {last}")
+      elif cohort_name == cohort and cohort_name != 'I' and cohort_name != 'G':
+        students.append(f"{first} {last}")
+    # print(sorted(students))
+    
+    data.close()
 
     return sorted(students)
 
@@ -106,9 +118,30 @@ def all_names_by_house(filename):
     ghosts = []
     instructors = []
 
-    # TODO: replace this with your code
+    data = open(filename)
+    # data = open('cohort_data.txt')
+    
+    for line in data:
+      first, last, house, _, cohort = line.rstrip().split('|')
+      # print(f"{first} {last} is in {cohort_name}")
+      if cohort == 'I':
+        instructors.append(f'{first} {last}')
+      elif cohort == 'G':
+        ghosts.append(f'{first} {last}')
+      elif house == 'Slytherin':
+        slytherin.append(f'{first} {last}')
+      elif house == 'Ravenclaw':
+        ravenclaw.append(f'{first} {last}')
+      elif house == 'Hufflepuff':
+        hufflepuff.append(f'{first} {last}')
+      elif house == 'Gryffindor':
+        gryffindor.append(f'{first} {last}')
+      elif house == "Dumbledore's Army":
+        dumbledores_army.append(f'{first} {last}')
+    
+    data.close()
 
-    return []
+    return [sorted(dumbledores_army), sorted(gryffindor), sorted(hufflepuff), sorted(ravenclaw), sorted(slytherin), sorted(ghosts), sorted(instructors)]
 
 
 def all_data(filename):
