@@ -1,5 +1,6 @@
 """Functions to parse a file containing student data."""
 # Exercise located at https://ed.devmountain.com/materials/data-bp-1/exercises/py-data-structures/
+# learn about Idiomatic Python at https://jerry-git.github.io/learn-python3/notebooks/intermediate/html/idiomatic_misc1.html
 
 def all_houses(filename):
     """Return a set of all house names in the given file.
@@ -15,15 +16,15 @@ def all_houses(filename):
       - set[str]: a set of strings
     """
 
-    houses = set()
     
     data = open(filename)
-    
-    for line in data:
-      house = line.rstrip().split('|')[2]
-      if house: # Instructors & Ghosts do not have a house, so house = ''. bool('') == False.
-                # if statement only executes if True. bool('characters') == True.
-        houses.add(house)
+    houses = set(line.rstrip().split('|')[2] for line in data if line.rstrip().split('|')[2] != '')
+    # houses = set()
+    # for line in data:
+    #   house = line.rstrip().split('|')[2]
+    #   if house: # Instructors & Ghosts do not have a house, so house = ''. bool('') == False.
+    #             # if statement only executes if True. bool('characters') == True.
+    #     houses.add(house)
     data.close()
 
     return houses
@@ -60,16 +61,19 @@ def students_by_cohort(filename, cohort='All'):
     students = []
     
     data = open(filename)
-    # data = open('cohort_data.txt')
+    
     
     for line in data:
       first, last, _, _, cohort_name = line.rstrip().split('|')
-      # print(f"{first} {last} is in {cohort_name}") # check to make sure above line is working as intended
-      if cohort == 'All' and cohort_name != 'I' and cohort_name != 'G':
-        students.append(f"{first} {last}")
-      elif cohort_name == cohort and cohort_name != 'I' and cohort_name != 'G':
-        students.append(f"{first} {last}")
-    # print(sorted(students))
+      # if cohort == 'All' and cohort_name != 'I' and cohort_name != 'G':
+      #   students.append(f"{first} {last}")
+      # elif cohort_name == cohort and cohort_name != 'I' and cohort_name != 'G':
+      #   students.append(f"{first} {last}")
+      students.append(f"{first} {last}" if cohort == 'All' and cohort_name not in ('I', 'G') else '')
+      students.append(f"{first} {last}" if cohort_name == cohort and cohort_name not in ('I', 'G') else '')
+    while '' in students: 
+      students.remove('')
+    ## print(sorted(students))
     
     data.close()
 
@@ -225,10 +229,14 @@ def find_duped_last_names(filename):
     dupe = set()
     for name, _, _, cohort in all_data(filename):
       last_name = name.split()[-1]
-      if last_name not in once:
-        once.add(last_name)
-      else:
-        dupe.add(last_name)
+      
+      once.add(last_name) if last_name not in once else dupe.add(last_name)
+      
+      # if last_name not in once:
+      #   once.add(last_name)
+      # else:
+      #   dupe.add(last_name)
+        
       # if last_name in once:
       #   dupe.add(last_name)
       # once.add(last_name)
@@ -258,7 +266,7 @@ def get_housemates_for(filename, name):
             student_house = house
     
     for full_name, house, _, cohort in all_data(filename):
-      if student_cohort == cohort and student_house == house and full_name != name:
+      if (student_cohort, student_house) == (cohort, house) and full_name != name:
         housemates.add(full_name)
     
     # target_person = None
