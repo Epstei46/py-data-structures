@@ -20,13 +20,10 @@ def all_houses(filename):
     data = open(filename)
     
     for line in data:
-      # below if statement skips lines for Instructors and Ghosts, which have no house.
-      if line[-2] != 'I' and line[-2] != 'G':
-        line = line.rstrip()
-        line_list = line.split('|')
-        house = line_list[2]
-        if house not in houses:
-          houses.add(house)
+      house = line.rstrip().split('|')[2]
+      if house: # Instructors & Ghosts do not have a house, so house = ''. bool('') == False.
+                # if statement only executes if True. bool('characters') == True.
+        houses.add(house)
     data.close()
 
     return houses
